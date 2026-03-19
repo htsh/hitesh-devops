@@ -197,6 +197,16 @@ When a target recovers:
 - record resolved timestamp
 - send one recovery notification
 
+### 8.1 Correlated Failure Awareness
+
+All SSH-based checks run from `vps3` over Tailscale. If Tailscale connectivity drops between `vps3` and a remote node, every SSH check targeting that node will fail simultaneously. This looks like a multi-service outage but is actually a network issue.
+
+V1 does not need to solve this automatically, but the implementation should be aware of it:
+
+- If all SSH checks against a single node fail in the same cycle, the root cause is likely Tailscale or network connectivity rather than individual service failures.
+- Consider logging or flagging when this pattern occurs so the operator can distinguish real multi-service outages from transport-level problems.
+- A future version could suppress or annotate alerts when correlated SSH failures are detected.
+
 ## 9. Alerting
 
 V1 alert transport is `ntfy`.
