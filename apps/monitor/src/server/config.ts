@@ -12,4 +12,6 @@ export const config = {
   nodeEnv: process.env.NODE_ENV || "development",
   mongoUri: process.env.MONGO_URI || "mongodb://localhost:27017/monitor",
   isDev: (process.env.NODE_ENV || "development") === "development",
+  ntfyUrl: process.env.NTFY_URL || "https://ntfy.sh",
+  ntfyTopic: process.env.NTFY_TOPIC || "",
 } as const;
