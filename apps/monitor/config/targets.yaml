@@ -1,0 +1,300 @@
+targets:
+  # --- Public endpoints ---
+  - id: http-arlo-dog
+    name: arlo.dog
+    class: advanced
+    service_key: arlo-dog
+    service_name: arlo.dog
+    resource_kind: api_service
+    check_kind: http
+    execution_mode: direct
+    node: vps1
+    enabled: true
+    interval_seconds: 60
+    timeout_seconds: 10
+    failure_threshold: 3
+    recovery_threshold: 2
+    notify_on_failure: true
+    metadata:
+      url: "https://arlo.dog"
+      expected_status: 200
+
+  - id: http-stagecouch-net
+    name: stagecouch.net
+    class: advanced
+    service_key: stagecouch-net
+    service_name: stagecouch.net
+    resource_kind: api_service
+    check_kind: http
+    execution_mode: direct
+    node: vps1
+    enabled: true
+    interval_seconds: 60
+    timeout_seconds: 10
+    failure_threshold: 3
+    recovery_threshold: 2
+    notify_on_failure: true
+    metadata:
+      url: "https://stagecouch.net"
+      expected_status: 200
+
+  - id: http-hitesh-nyc
+    name: hitesh.nyc
+    class: advanced
+    service_key: hitesh-nyc
+    service_name: hitesh.nyc
+    resource_kind: api_service
+    check_kind: http
+    execution_mode: direct
+    node: vps2
+    enabled: true
+    interval_seconds: 60
+    timeout_seconds: 10
+    failure_threshold: 3
+    recovery_threshold: 2
+    notify_on_failure: true
+    metadata:
+      url: "https://hitesh.nyc"
+      expected_status: 200
+
+  - id: http-hitesh-cc
+    name: hitesh.cc
+    class: advanced
+    service_key: hitesh-cc
+    service_name: hitesh.cc
+    resource_kind: api_service
+    check_kind: http
+    execution_mode: direct
+    node: vps3
+    enabled: true
+    interval_seconds: 60
+    timeout_seconds: 10
+    failure_threshold: 3
+    recovery_threshold: 2
+    notify_on_failure: true
+    metadata:
+      url: "https://hitesh.cc"
+      expected_status: 200
+
+  # --- Caddy ---
+  - id: caddy-vps1
+    name: Caddy on vps1
+    class: advanced
+    service_key: caddy-vps1
+    service_name: Caddy
+    resource_kind: api_service
+    check_kind: http
+    execution_mode: ssh
+    node: vps1
+    enabled: true
+    interval_seconds: 60
+    timeout_seconds: 10
+    failure_threshold: 3
+    recovery_threshold: 2
+    notify_on_failure: true
+    metadata:
+      url: "http://127.0.0.1:80"
+      expected_status: 200
+
+  - id: caddy-vps2
+    name: Caddy on vps2
+    class: advanced
+    service_key: caddy-vps2
+    service_name: Caddy
+    resource_kind: api_service
+    check_kind: http
+    execution_mode: ssh
+    node: vps2
+    enabled: true
+    interval_seconds: 60
+    timeout_seconds: 10
+    failure_threshold: 3
+    recovery_threshold: 2
+    notify_on_failure: true
+    metadata:
+      url: "http://127.0.0.1:80"
+      expected_status: 200
+
+  # --- Host reachability ---
+  - id: ping-vps1
+    name: vps1 reachability
+    class: advanced
+    service_key: vps1-host
+    service_name: vps1
+    resource_kind: host
+    check_kind: ping
+    execution_mode: direct
+    node: vps1
+    enabled: true
+    interval_seconds: 60
+    timeout_seconds: 10
+    failure_threshold: 3
+    recovery_threshold: 2
+    notify_on_failure: true
+    metadata:
+      host: "100.64.0.1"
+
+  - id: ping-vps2
+    name: vps2 reachability
+    class: advanced
+    service_key: vps2-host
+    service_name: vps2
+    resource_kind: host
+    check_kind: ping
+    execution_mode: direct
+    node: vps2
+    enabled: true
+    interval_seconds: 60
+    timeout_seconds: 10
+    failure_threshold: 3
+    recovery_threshold: 2
+    notify_on_failure: true
+    metadata:
+      host: "100.64.0.2"
+
+  - id: ping-vps3
+    name: vps3 reachability
+    class: advanced
+    service_key: vps3-host
+    service_name: vps3
+    resource_kind: host
+    check_kind: ping
+    execution_mode: direct
+    node: vps3
+    enabled: true
+    interval_seconds: 30
+    timeout_seconds: 5
+    failure_threshold: 3
+    recovery_threshold: 2
+    notify_on_failure: true
+    metadata:
+      host: "127.0.0.1"
+
+  # --- Redis ---
+  - id: redis-vps1
+    name: Redis on vps1
+    class: advanced
+    service_key: redis-vps1
+    service_name: Redis
+    resource_kind: redis_instance
+    check_kind: redis_ping
+    execution_mode: ssh
+    node: vps1
+    enabled: true
+    interval_seconds: 60
+    timeout_seconds: 10
+    failure_threshold: 3
+    recovery_threshold: 2
+    notify_on_failure: true
+    metadata:
+      host: "127.0.0.1"
+      port: 6379
+
+  - id: redis-vps2
+    name: Redis on vps2
+    class: advanced
+    service_key: redis-vps2
+    service_name: Redis
+    resource_kind: redis_instance
+    check_kind: redis_ping
+    execution_mode: ssh
+    node: vps2
+    enabled: true
+    interval_seconds: 60
+    timeout_seconds: 10
+    failure_threshold: 3
+    recovery_threshold: 2
+    notify_on_failure: true
+    metadata:
+      host: "127.0.0.1"
+      port: 6379
+
+  # --- PM2 ---
+  - id: pm2-vps1
+    name: PM2 on vps1
+    class: advanced
+    service_key: pm2-vps1
+    service_name: PM2 Runtime
+    resource_kind: pm2_process
+    check_kind: pm2_status
+    execution_mode: ssh
+    node: vps1
+    enabled: true
+    interval_seconds: 60
+    timeout_seconds: 15
+    failure_threshold: 3
+    recovery_threshold: 2
+    notify_on_failure: true
+    metadata: {}
+
+  - id: pm2-vps2
+    name: PM2 on vps2
+    class: advanced
+    service_key: pm2-vps2
+    service_name: PM2 Runtime
+    resource_kind: pm2_process
+    check_kind: pm2_status
+    execution_mode: ssh
+    node: vps2
+    enabled: true
+    interval_seconds: 60
+    timeout_seconds: 15
+    failure_threshold: 3
+    recovery_threshold: 2
+    notify_on_failure: true
+    metadata: {}
+
+  # --- Mongo ---
+  - id: mongo-vps1
+    name: MongoDB on vps1
+    class: advanced
+    service_key: mongo-vps1
+    service_name: MongoDB
+    resource_kind: mongo_instance
+    check_kind: mongo_ping
+    execution_mode: ssh
+    node: vps1
+    enabled: true
+    interval_seconds: 60
+    timeout_seconds: 10
+    failure_threshold: 3
+    recovery_threshold: 2
+    notify_on_failure: true
+    metadata:
+      port: 27017
+
+  - id: mongo-vps2
+    name: MongoDB on vps2
+    class: advanced
+    service_key: mongo-vps2
+    service_name: MongoDB
+    resource_kind: mongo_instance
+    check_kind: mongo_ping
+    execution_mode: ssh
+    node: vps2
+    enabled: true
+    interval_seconds: 60
+    timeout_seconds: 10
+    failure_threshold: 3
+    recovery_threshold: 2
+    notify_on_failure: true
+    metadata:
+      port: 27017
+
+  - id: mongo-vps3
+    name: MongoDB on vps3
+    class: advanced
+    service_key: mongo-vps3
+    service_name: MongoDB
+    resource_kind: mongo_instance
+    check_kind: mongo_ping
+    execution_mode: direct
+    node: vps3
+    enabled: true
+    interval_seconds: 60
+    timeout_seconds: 10
+    failure_threshold: 3
+    recovery_threshold: 2
+    notify_on_failure: true
+    metadata:
+      port: 27017
