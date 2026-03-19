@@ -4,14 +4,24 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { config } from "./config.js";
 import { healthRoutes } from "./api/health.js";
+import { connectDb, disconnectDb } from "./db/client.js";
+import { ensureIndexes } from "./db/indexes.js";
+import { seedAdvancedTargets } from "./db/seed.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 async function start() {
   const app = Fastify({ logger: true });
 
+  // Database
+  await connectDb();
+  await ensureIndexes();
+  await seedAdvancedTargets();
+
+  // API routes
   await app.register(healthRoutes);
 
+  // Static file serving in production
   if (!config.isDev) {
     await app.register(fastifyStatic, {
       root: path.resolve(__dirname, "../../dist/web"),
@@ -22,6 +32,15 @@ async function start() {
       reply.sendFile("index.html");
     });
   }
+
+  // Graceful shutdown
+  const shutdown = async () => {
+    await app.close();
+    await disconnectDb();
+    process.exit(0);
+  };
+  process.on("SIGINT", shutdown);
+  process.on("SIGTERM", shutdown);
 
   await app.listen({ port: config.port, host: config.host });
   console.log(`Monitor running at http://${config.host}:${config.port}`);
