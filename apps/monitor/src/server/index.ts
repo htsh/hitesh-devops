@@ -8,6 +8,7 @@ import { targetRoutes } from "./api/targets.js";
 import { connectDb, disconnectDb } from "./db/client.js";
 import { ensureIndexes } from "./db/indexes.js";
 import { seedAdvancedTargets } from "./db/seed.js";
+import { startScheduler, stopScheduler } from "./scheduler/loop.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -18,6 +19,9 @@ async function start() {
   await connectDb();
   await ensureIndexes();
   await seedAdvancedTargets();
+
+  // Start check scheduler
+  startScheduler();
 
   // API routes
   await app.register(healthRoutes);
@@ -38,6 +42,7 @@ async function start() {
   // Graceful shutdown
   const shutdown = async () => {
     await app.close();
+    stopScheduler();
     await disconnectDb();
     process.exit(0);
   };
