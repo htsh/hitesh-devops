@@ -128,6 +128,8 @@ Data layer:
 - `vps1` = SECONDARY
 - `vps3` = ARBITER
 
+> **Note (2026-03-19):** MongoDB is being migrated from a replica set to independent standalone instances on each node. After migration, `vps2` retains all data, `vps3` runs a local standalone for the monitor service, and `vps1` runs an empty standalone. The replica set health check above will be replaced with individual Mongo reachability checks per node.
+
 ## 6. Check Types
 
 ### 6.1 Basic Dashboard-Managed Checks
