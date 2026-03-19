@@ -4,6 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { config } from "./config.js";
 import { healthRoutes } from "./api/health.js";
+import { targetRoutes } from "./api/targets.js";
 import { connectDb, disconnectDb } from "./db/client.js";
 import { ensureIndexes } from "./db/indexes.js";
 import { seedAdvancedTargets } from "./db/seed.js";
@@ -20,6 +21,7 @@ async function start() {
 
   // API routes
   await app.register(healthRoutes);
+  await app.register(targetRoutes);
 
   // Static file serving in production
   if (!config.isDev) {
