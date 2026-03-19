@@ -19,7 +19,7 @@ Shared services: Caddy (vps1, vps2), MongoDB replica set rs0 (vps2=PRIMARY, vps1
 
 - `docs/infra/` — infrastructure inventory, monitoring research, operational references
 - `docs/plans/` — dated design notes and implementation plans (naming: `YYYY-MM-DD-topic-design.md`)
-- Root: `README.md`, `AGENTS.md`, `.gitignore`
+- Root: `README.md`, `AGENTS.md`, `CLAUDE.md`, `.gitignore`
 
 ## Current Active Project
 
@@ -33,6 +33,10 @@ Infra Monitor V1 — a self-hosted monitoring service for `vps3` with Mongo pers
 No build system or test runner. Use these for pre-commit checks:
 - `git status --short` / `git diff --stat` — review changes
 - `markdownlint "*.md"` — lint markdown (if installed)
+- `rg --files` — list current document set
+- `find docs -maxdepth 2 -type f | sort` — quick view of organized docs
+
+Before opening a PR, verify that links resolve and that hostnames, node roles, and alerting details match the latest known infrastructure.
 
 ## Writing Conventions
 
@@ -44,3 +48,7 @@ No build system or test runner. Use these for pre-commit checks:
 ## Commit Style
 
 Short imperative subjects: `add monitor contributor guide`, `update external monitor notes`. PRs should state purpose, list files changed, and link supporting sources when referencing external information.
+
+## Security
+
+Do not commit secrets, API keys, private SSH material, or Tailscale credentials. Reference systems by stable hostnames (`vps1`, `vps2`, `vps3`) and avoid embedding sensitive access details.
