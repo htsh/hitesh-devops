@@ -26,6 +26,7 @@ Three VPS nodes connected via **Tailscale** (`vps1`, `vps2`, `vps3`). Typical pa
 
 * `arlo.dog` → `vps1`
 * `stagecouch.net` → `vps1`
+* `api.stagecouch.net` → `vps1` (`Stagecouch` backend endpoint; currently assigned there even if the app is offline)
 * `hitesh.nyc` → `vps2`
 * `hitesh.cc` → `vps3`
 
@@ -60,6 +61,12 @@ Three VPS nodes connected via **Tailscale** (`vps1`, `vps2`, `vps3`). Typical pa
   * `vps3:27017` = standalone for monitor-related local use
   * `vps1:27017` = standalone for future/local use
   * There is no active MongoDB replica set in the current topology
+* **MariaDB** installed on `vps2`
+
+  * Snapshot date: `2026-03-19`
+  * Current confirmed use: `bible-api`
+  * Current confirmed database: `bible_api`
+  * Treat it as a node-local relational data service on `vps2` unless and until other consumers are documented
 
 ### Cache / Queueing (Lightweight)
 
@@ -71,6 +78,9 @@ Three VPS nodes connected via **Tailscale** (`vps1`, `vps2`, `vps3`). Typical pa
 ### Process Management (App Nodes)
 
 * **PM2** is used as a process manager for Node-based services on app-capable nodes (`vps1`, `vps2`) where applicable.
+* Snapshot date: `2026-03-19`
+* Current confirmed active example on `vps2`: `bible-api`
+* Source note: documented from `htsh/bible_api` deployment files and user confirmation.
 
 ---
 
@@ -111,6 +121,7 @@ Use these defaults when choosing a deploy target:
 ## Operational Notes (Keep Updated)
 
 * Track which node is the **active edge** for each public domain (usually `vps1`).
+* Keep the live service inventory in `docs/infra/service-manifest.md`.
 * Re-check Redis usage: shared on `vps2` vs node-local on `vps1`.
 * Keep MongoDB connection assumptions explicit per project: shared data should point to `vps2`, and node-local use on `vps1` or `vps3` should use local standalone URIs intentionally.
 * Ensure projects document:
