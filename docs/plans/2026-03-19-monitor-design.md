@@ -69,7 +69,7 @@ V1 supports two target classes.
 - defined in version-controlled config
 - shown in the dashboard as read-only definitions
 - intended for infrastructure-aware checks
-- examples: Mongo replica set health, PM2 process state, Redis checks, SSH command checks
+- examples: Mongo instance reachability, PM2 process state, Redis checks, SSH command checks
 
 ### 5.2 Target Shape
 
@@ -122,13 +122,12 @@ Core services:
 
 Data layer:
 
-- Mongo replica set `rs0`
-- expected topology:
-- `vps2` = PRIMARY
-- `vps1` = SECONDARY
-- `vps3` = ARBITER
+- MongoDB standalone instances on `vps1`, `vps2`, and `vps3`
+- `vps2` = main standalone with the existing shared user data
+- `vps3` = standalone used for the monitor service's local MongoDB data
+- `vps1` = standalone reserved for future or node-local use
 
-> **Note (2026-03-19):** MongoDB is being migrated from a replica set to independent standalone instances on each node. After migration, `vps2` retains all data, `vps3` runs a local standalone for the monitor service, and `vps1` runs an empty standalone. The replica set health check above will be replaced with individual Mongo reachability checks per node.
+> **Updated (2026-03-20):** MongoDB now runs as independent standalone instances on each node. The monitor should treat MongoDB as per-node targets rather than a single replica-set target.
 
 ## 6. Check Types
 
@@ -147,7 +146,7 @@ These checks should be easy to create through the dashboard without custom code.
 V1 advanced checks should support:
 
 - SSH command checks on `vps1` and `vps2`
-- Mongo replica-set health and role validation
+- Mongo instance reachability and per-node status validation
 - Redis reachability validation
 - PM2 process-state validation
 - Docker container state validation

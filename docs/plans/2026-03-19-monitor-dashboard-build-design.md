@@ -97,7 +97,7 @@ Examples:
 - `resource_kind=api_service`, `check_kind=http`
 - `resource_kind=pm2_process`, `check_kind=pm2_status`
 - `resource_kind=docker_container`, `check_kind=docker_status`
-- `resource_kind=mongo_replica_set`, `check_kind=mongo_rs`
+- `resource_kind=mongo_instance`, `check_kind=mongo_ping`
 - `resource_kind=cron_job`, `check_kind=heartbeat`
 
 Collections:
@@ -130,7 +130,7 @@ Advanced config-managed checks:
 
 - PM2 process state
 - Docker container state and health
-- Mongo replica set topology and role validation
+- Mongo standalone reachability and per-node validation
 - Redis reachability
 - future PostgreSQL protocol checks
 - SSH-backed allowlisted commands
@@ -172,7 +172,7 @@ Deployment on `vps3`:
 - one Fastify app
 - one `PM2` process
 - built React assets served by Fastify
-- Mongo connection to `rs0`
+- Mongo connection to the local standalone on `vps3`, for example `mongodb://localhost:27017/monitor`
 - SSH key for checks against `vps1` and `vps2`
 - runtime secrets injected outside git
 - bind only to Tailscale-reachable interfaces or enforce equivalent firewall rules

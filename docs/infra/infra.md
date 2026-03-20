@@ -1,6 +1,6 @@
 # Infrastructure Inventory (Reusable Deploy Targets)
 
-Last updated: 2026-03-02 (source reference was 2026-02-24; added bandwidth notes + `stagecouch.net`)
+Last updated: 2026-03-20 (MongoDB topology updated from replica set to standalone instances)
 
 ## Summary
 
@@ -18,7 +18,7 @@ Three VPS nodes connected via **Tailscale** (`vps1`, `vps2`, `vps3`). Typical pa
 | ------ | --------- | ------- | ------ | ----------------- | ------------------- | ---------------------------- |
 | `vps1` | AlmaLinux | 2 cores | 4 GB   | 70 GB NVMe        | **Unmetered**       | Public edge + app node       |
 | `vps2` | Ubuntu    | 6 cores | 8 GB   | 120 GB RAID10 SSD | **Metered (~9 TB)** | Data + ingest heavy node     |
-| `vps3` | Ubuntu    | 2 cores | 2.5 GB | 40 GB RAID10 SSD  | **Metered (~7 TB)** | Arbiter / light utility node |
+| `vps3` | Ubuntu    | 2 cores | 2.5 GB | 40 GB RAID10 SSD  | **Metered (~7 TB)** | Light utility / internal ops node |
 
 ---
 
@@ -54,12 +54,12 @@ Three VPS nodes connected via **Tailscale** (`vps1`, `vps2`, `vps3`). Typical pa
 
 ### Data Store
 
-* **MongoDB** across all three nodes in a replica set topology:
+* **MongoDB** as independent standalone instances on all three nodes:
 
-  * Replica set: `rs0`
-  * `vps2:27017` = **PRIMARY**
-  * `vps1:27017` = **SECONDARY**
-  * `vps3:27017` = **ARBITER** (non data-bearing)
+  * `vps2:27017` = main standalone with the existing shared user data
+  * `vps3:27017` = standalone for monitor-related local use
+  * `vps1:27017` = standalone for future/local use
+  * There is no active MongoDB replica set in the current topology
 
 ### Cache / Queueing (Lightweight)
 
@@ -86,7 +86,7 @@ Use these defaults when choosing a deploy target:
   * Best for databases, workers, queues, analytics, and high-query APIs.
 * Keep `vps3` **quiet and stable**.
 
-  * Good for quorum/arbiter roles and tiny utility services.
+  * Good for low-noise utility services and internal operations.
   * Avoid heavy containers, memory spikes, or noisy workloads.
 
 ---
@@ -112,10 +112,9 @@ Use these defaults when choosing a deploy target:
 
 * Track which node is the **active edge** for each public domain (usually `vps1`).
 * Re-check Redis usage: shared on `vps2` vs node-local on `vps1`.
-* Keep Mongo replica set membership/roles consistent (`vps2` primary, `vps1` secondary, `vps3` arbiter).
+* Keep MongoDB connection assumptions explicit per project: shared data should point to `vps2`, and node-local use on `vps1` or `vps3` should use local standalone URIs intentionally.
 * Ensure projects document:
 
   * which domains they use
   * which nodes host app vs data vs workers
   * which internal ports/services are reachable over Tailscale vs public ingress
-

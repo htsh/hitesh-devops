@@ -134,7 +134,6 @@ export type ResourceKind =
   | "pm2_process"
   | "docker_container"
   | "mongo_instance"
-  | "mongo_replica_set"
   | "redis_instance"
   | "cron_job";
 
@@ -145,7 +144,6 @@ export type CheckKind =
   | "pm2_status"
   | "docker_status"
   | "mongo_ping"
-  | "mongo_rs"
   | "redis_ping"
   | "heartbeat"
   | "ssh_command";

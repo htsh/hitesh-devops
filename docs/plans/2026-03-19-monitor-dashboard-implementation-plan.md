@@ -57,7 +57,7 @@ Deliverables:
 - due-target selection logic
 - direct checks: HTTP, TCP, reachability
 - SSH execution layer
-- advanced checks: PM2, Docker, Mongo replica set, Redis, heartbeat
+- advanced checks: PM2, Docker, Mongo standalone instances, Redis, heartbeat
 - check result persistence
 - target status recomputation
 
@@ -132,7 +132,7 @@ Automated tests should focus first on:
 Manual validation should cover:
 
 - SSH command execution from `vps3`
-- Mongo replica-set checks
+- Mongo standalone instance checks
 - `ntfy` delivery
 - Tailscale-only reachability
 
@@ -144,7 +144,7 @@ Seed the first advanced targets from current infrastructure:
 - host reachability: `vps1`, `vps2`, `vps3`
 - PM2 runtime checks on `vps1` and `vps2`
 - Redis checks on `vps1` and `vps2`
-- Mongo replica set topology check for `rs0`
+- Mongo instance checks on `vps1`, `vps2`, and `vps3`
 
 Add heartbeat targets next for backups, cron jobs, and recurring maintenance tasks as they are identified.
 
