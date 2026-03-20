@@ -2,6 +2,7 @@ import type { Target, TargetStatus, HealthState } from "../types.js";
 import type { CheckResult } from "./types.js";
 import { getChecker } from "./registry.js";
 import { checkRuns, targetStatus } from "../db/collections.js";
+import { handleIncident } from "../incidents/handler.js";
 
 export function computeNewStatus(
   current: TargetStatus,
@@ -88,6 +89,9 @@ export async function runCheck(target: Target): Promise<{ result: CheckResult; p
     { target_id: target.id },
     { $set: statusWithoutId },
   );
+
+  // Handle incident lifecycle (outage open/resolve + notifications)
+  await handleIncident(target, previousHealth, newStatus.health, result.message);
 
   return { result, previousHealth, newHealth: newStatus.health };
 }
