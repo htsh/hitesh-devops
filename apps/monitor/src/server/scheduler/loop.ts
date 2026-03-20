@@ -22,6 +22,9 @@ async function tick(): Promise<void> {
     const statuses = await targetStatus().find({}).toArray();
     const statusMap = new Map(statuses.map((s) => [s.target_id, s]));
 
+    // Track SSH check failures per node in this tick
+    const nodeFailures = new Map<string, string[]>();
+
     for (const target of enabledTargets) {
       const status = statusMap.get(target.id);
       const lastCheck = status?.last_check_at ?? null;
@@ -29,9 +32,26 @@ async function tick(): Promise<void> {
       if (!isDue(target, lastCheck)) continue;
 
       try {
-        await runCheck(target);
+        const { result } = await runCheck(target);
+
+        // Track SSH-based check failures by node
+        if (target.execution_mode === "ssh" && result.status !== "success") {
+          const fails = nodeFailures.get(target.node) ?? [];
+          fails.push(target.id);
+          nodeFailures.set(target.node, fails);
+        }
       } catch (err) {
         console.error(`Check failed for ${target.id}:`, err);
+      }
+    }
+
+    // Log correlated SSH failures
+    for (const [node, failedTargets] of nodeFailures) {
+      if (failedTargets.length >= 2) {
+        console.warn(
+          `Correlated failure: ${failedTargets.length} SSH checks failed on node "${node}" — ` +
+          `likely Tailscale/network issue. Targets: ${failedTargets.join(", ")}`,
+        );
       }
     }
   } catch (err) {
