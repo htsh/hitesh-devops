@@ -8,7 +8,7 @@ Purpose: record the current known service footprint by node, public hostname, ru
 
 ### stagecouch-api
 
-- Status: inactive
+- Status: active
 - Product: `Stagecouch`
 - Public hostname: `api.stagecouch.net`
 - Node: `vps1`
