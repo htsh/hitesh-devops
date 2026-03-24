@@ -1,6 +1,6 @@
 # Infrastructure Inventory (Reusable Deploy Targets)
 
-Last updated: 2026-03-20 (MongoDB topology updated from replica set to standalone instances)
+Last updated: 2026-03-21 (PostgreSQL added on `vps2`; MongoDB topology updated from replica set to standalone instances)
 
 ## Summary
 
@@ -67,6 +67,12 @@ Three VPS nodes connected via **Tailscale** (`vps1`, `vps2`, `vps3`). Typical pa
   * Current confirmed use: `bible-api`
   * Current confirmed database: `bible_api`
   * Treat it as a node-local relational data service on `vps2` unless and until other consumers are documented
+* **PostgreSQL** installed on `vps2`
+
+  * Snapshot date: `2026-03-21`
+  * Current confirmed use: none documented yet
+  * Intended exposure: internal-only over Tailscale or loopback
+  * Preferred bind pattern: `localhost` plus the `vps2` Tailscale IP, not the public interface
 
 ### Cache / Queueing (Lightweight)
 
@@ -78,9 +84,9 @@ Three VPS nodes connected via **Tailscale** (`vps1`, `vps2`, `vps3`). Typical pa
 ### Process Management (App Nodes)
 
 * **PM2** is used as a process manager for Node-based services on app-capable nodes (`vps1`, `vps2`) where applicable.
-* Snapshot date: `2026-03-19`
-* Current confirmed active example on `vps2`: `bible-api`
-* Source note: documented from `htsh/bible_api` deployment files and user confirmation.
+* Snapshot date: `2026-03-20`
+* Current confirmed active examples: `stagecouch-api` on `vps1`, `bible-api` on `vps2`
+* Source note: documented from deployment files and user confirmations.
 
 ---
 
