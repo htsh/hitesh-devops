@@ -12,32 +12,38 @@ Export old dog-related image attachments from Messages into Dropbox so the user 
 
 ## Important context
 
-A prior Hermes agent already investigated this on another Mac and found that machine did not have most of the historical attachment payloads available locally.
+A prior Hermes agent already investigated the project on a different Mac and found that machine did not have most of the historical attachment payloads available locally.
 
-That prior machine had:
-- `~/Library/Messages/chat.db`
-- `~/Library/Messages/Attachments/`
-- a Dropbox export folder at `/Users/hitesh/Library/CloudStorage/Dropbox/DOGS`
+A later follow-up session then confirmed the user is now on the larger-storage Mac they want to use as the long-term local Messages archive machine.
 
-But the attempted export there mostly failed because the database referenced attachments whose files were missing locally.
+Current known state on this larger-storage Mac:
+- `~/Library/Messages` was about `2.7 GB`
+- `~/Library/Messages/Attachments` was about `1.6 GB`
+- `~/Library/Messages/chat.db` was about `395 MB`
+- `Dogs of 222 East 111` exists on this Mac as `chat_id = 658`
+- `East Harlem Social Club` appears as `chat_id = 506`, but only as a stub chat record with `0` locally joined messages in the follow-up check
 
-Therefore, continue this project on this Mac only if this Mac actually has the Messages attachments downloaded.
+Important: do not assume this Mac already has the old dog photos downloaded locally. The follow-up read-only scan found that `Dogs of 222 East 111` had about `1,608` image attachments referenced in the DB, but only a handful were physically present in `~/Library/Messages/Attachments/`.
+
+After the user manually clicked a few download links in Messages, local presence increased from `5` to `8`, including some real JPEGs. So this Mac is viable, but hydration/download is still the bottleneck.
+
+The user has also since granted `iTerm2` macOS Accessibility permission, so UI automation attempts against Messages are now unblocked in principle.
 
 ## Priority threads
 
-Start with these two threads:
+Start with these two threads, but verify ids first on the current Mac:
 
 1. `Dogs of 222 East 111`
-   - `chat_id = 583`
-   - last known activity from prior scan: `2023-10-12`
-   - roughly `1,591` image attachments in DB scan
+   - current known chat id on the larger-storage Mac: `658`
+   - roughly `1,608` image attachments in DB scan on that Mac
+   - this is the primary active target
 
 2. `East Harlem Social Club`
-   - `chat_id = 595`
-   - last known activity from prior scan: `2023-04-03`
-   - roughly `140` image attachments in DB scan
+   - current known chat id on the larger-storage Mac: `506`
+   - currently appears as a stub chat record with no local message rows from the follow-up check
+   - treat as secondary until a fuller local history is confirmed
 
-Do not assume chat IDs are identical on a different Mac without verifying, but use them as the first thing to check.
+Do not assume chat IDs are identical across Macs without verifying.
 
 ## Required approach
 

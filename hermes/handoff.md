@@ -223,25 +223,106 @@ Per thread:
 
 Important detail: the copied files were effectively sticker / emoji-style PNG assets, not the main dog photo archive the user actually wants.
 
-### Critical conclusion for the next Hermes agent
+### Updated status on the larger-storage Mac (follow-up session)
 
-Do not assume this Mac has the real attachment payloads.
+A later Hermes session confirmed the user is now on the Mac with the larger SSD, and this is the machine they want to use as the long-term local Messages archive machine.
 
-The user explicitly said they have another Mac with a much larger SSD and with the messages downloaded there. That other Mac is the correct machine to continue this project.
+The user explicitly wants this Mac to keep Messages data locally rather than relying on cloud-only/offloaded attachment state.
 
-The next Hermes agent should continue from that other Mac and treat this Mac only as a reconnaissance / planning pass.
+### Read-only findings from the larger-storage Mac
 
-### Recommended continuation plan on the other Mac
+Local storage snapshot during the follow-up session:
+- `~/Library/Messages` size: about `2.7 GB`
+- `~/Library/Messages/Attachments` size: about `1.6 GB`
+- `~/Library/Messages/chat.db` size: about `395 MB`
 
-1. Confirm that the other Mac has the old dog photos actually downloaded locally in Messages.
-2. Re-run a read-only scan against:
+Chat lookup on this Mac found:
+- `chat_id = 658` → `Dogs of 222 East 111`
+- `chat_id = 506` → `East Harlem Social Club`
+
+Important difference from the earlier machine: chat ids are not identical across Macs, so do not assume the prior ids (`583`, `595`) are stable.
+
+### Current thread status on this Mac
+
+#### `Dogs of 222 East 111`
+
+Read-only DB scan on this Mac found:
+- about `1,608` image attachments referenced in the database
+- initially only `5` image files present locally
+- after the user manually clicked a few download links in Messages, local present count increased to `8`
+- total locally present size after that small manual test: about `11.05 MB`
+
+This is an important confirmation:
+- the thread history is present
+- many attachments are still cloud-backed / not hydrated locally
+- manual interaction in Messages can cause real JPEG files to materialize in `~/Library/Messages/Attachments/`
+- therefore this Mac is a viable machine for the project, but hydration/download is the bottleneck
+
+Examples of real JPEG files that became present locally after manual download:
+- `IMG_0166.jpeg`
+- `IMG_6564.jpeg`
+- `70430369031__A6875A89-7C3D-40C9-824E-EFF9236B667D.jpeg`
+
+The user also reported that, when scrolling back in this thread, many old images appear as generic thumbnails with download links. That is consistent with attachment metadata existing locally while the payload files remain offloaded.
+
+#### `East Harlem Social Club`
+
+On this Mac, a chat row named `East Harlem Social Club` exists in `chat`, but a direct join check found:
+- `message_count = 0`
+- no recent messages
+- no matching image attachments from the current query
+
+So on this Mac it currently appears only as a stub/shell chat record, not a populated local thread.
+
+### Current conclusion for the next Hermes agent
+
+This larger-storage Mac is now the correct machine to continue with.
+
+However, do not assume the old dog photos are already downloaded locally just because the history is visible in Messages. The current state is:
+- message history / attachment metadata exist
+- many actual attachment payloads are still not present in `~/Library/Messages/Attachments/`
+- manual clicking of download links does work, but is not scalable for ~1,600 images
+
+### Next recommended direction
+
+Before attempting a full export, the next agent should focus on bulk hydration / download strategy for `Dogs of 222 East 111`.
+
+Recommended sequence:
+1. Confirm Messages settings on this Mac:
+   - Keep Messages = `Forever`
+   - Messages in iCloud enabled
+   - use `Sync Now`
+2. Leave Messages open on the target thread and observe whether passive hydration increases local file count.
+3. Investigate UI automation for bulk-triggering downloads of placeholder attachments.
+4. Re-scan local attachment presence after any download attempt.
+5. Only once local presence reaches a useful level, perform export to Dropbox with JSON/CSV manifests.
+
+### UI automation blocker discovered
+
+A first attempt to automate Messages UI from Hermes via `osascript` hit the macOS Accessibility permission wall.
+
+Observed result:
+- basic app activation works
+- full UI scripting failed with:
+  - `osascript is not allowed assistive access`
+
+The user has since enabled the required Accessibility permission for `iTerm2` on this Mac.
+
+So the prerequisite is now satisfied, and another Hermes agent can retry UI inspection / automation to see whether repetitive download clicks can be semi-automated.
+
+### Recommended continuation plan on this Mac
+
+1. Verify/keep Messages settings for long-term retention on this Mac.
+2. Re-open `Dogs of 222 East 111` in Messages.
+3. Verify Hermes/UI automation can now inspect the Messages UI.
+4. Try either:
+   - passive sync/hydration, or
+   - Hermes-driven UI automation for repeated download triggering
+5. Re-run a read-only scan against:
    - `~/Library/Messages/chat.db`
    - `~/Library/Messages/Attachments/`
-3. Re-check the same two chat targets first:
-   - `chat_id 583` = `Dogs of 222 East 111`
-   - `chat_id 595` = `East Harlem Social Club`
-4. Export image attachments into Dropbox under a `DOGS` folder.
-5. Write a manifest of copied files with:
+6. Once a meaningful number of real image files are present locally, export image attachments into Dropbox under a `DOGS` folder.
+7. Write a manifest of copied files with:
    - thread name
    - chat id
    - attachment id
@@ -251,8 +332,9 @@ The next Hermes agent should continue from that other Mac and treat this Mac onl
    - destination path
    - byte size
    - hash if practical
-6. Verify counts and exported size before any deletion.
-7. Only after successful verification, consider thread deletion or cleanup.
+   - status (`copied`, `missing_source`, etc.)
+8. Verify counts and exported size before any deletion.
+9. Only after successful verification, consider thread deletion or cleanup.
 
 ### Operational cautions
 
