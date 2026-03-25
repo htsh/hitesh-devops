@@ -109,13 +109,6 @@ Ranked by a simple heuristic: recent commits, uncommitted changes, and signs of 
 - `bible_api`
 - `jobs`
 
-### Games
-- `Games/2d-platformer-controller`
-- `Games/2d-platformer---starter-kit`
-- `Games/godot-3d-multiplayer-template`
-- `Games/orc-clash`
-- `Games/side-scroller-mono`
-
 ## Repo inventory
 
 ### Top-level `~/Code`
@@ -151,13 +144,6 @@ Ranked by a simple heuristic: recent commits, uncommitted changes, and signs of 
 - `quartz` — Node/JS, TypeScript
 - `vision` — Node/JS, TypeScript
 
-### Under `~/Code/Games`
-- `2d-platformer-controller` — Godot
-- `2d-platformer---starter-kit` — Godot
-- `godot-3d-multiplayer-template` — Godot
-- `orc-clash` — Godot
-- `side-scroller-mono`
-
 ## Notable signals / cautions
 
 - Several repos have `CLAUDE.md`, which strongly suggests active AI-assisted development workflows.
@@ -168,7 +154,7 @@ Ranked by a simple heuristic: recent commits, uncommitted changes, and signs of 
   - `gmail-cleaner`
   - `hitesh-devops`
 - `jobs` has an unusual git state (repo present, dirty, but no normal branch/log surfaced during the scan); inspect before relying on it.
-- `dog-roast` and `Games/2d-platformer-controller` appear locally active but do not have remotes configured.
+- `dog-roast` appears locally active but does not have a remote configured.
 
 ## Suggested next step if another agent needs deeper context
 
