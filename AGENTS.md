@@ -2,6 +2,7 @@
 
 ## Project Structure & Module Organization
 This repository is documentation-first. Keep repo-level files at the root, especially [README.md](/home/hitesh/hitesh-devops/README.md), [AGENTS.md](/home/hitesh/hitesh-devops/AGENTS.md), and `.gitignore`. Store infrastructure references in [docs/infra/infra.md](/home/hitesh/hitesh-devops/docs/infra/infra.md) and adjacent files under `docs/infra/`. Store dated design or planning notes under `docs/plans/` using `YYYY-MM-DD-topic-design.md`.
+The `hermes/` folder stores repo-local continuity notes for Hermes, an AI assistant agent similar to Openclaw. Hermes helps the user with tasks, acts as an assistant, and keeps notes for itself so later Hermes sessions can continue work with local context.
 
 ## Build, Test, and Development Commands
 There is no project-local build system or automated test runner yet. Use lightweight validation commands before submitting changes:
