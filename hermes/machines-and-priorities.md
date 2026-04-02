@@ -73,6 +73,18 @@ This note records the current machine fleet, how Hermes is being used across it,
 - Dropbox is an important cross-machine sync layer in practice.
 - For project continuity, repo-local `hermes/` notes remain preferred when relevant.
 
+## Location and network
+
+- Both babyblue and debian are located in the user's NYC apartment (Harlem)
+- Internet: 1 Gbps Fios connection
+- Use case: Development and local serving when needed
+- Production infrastructure runs on the 3 VPS nodes (hitesh-cloud)
+
+## Power and availability patterns
+
+- **debian (Razer Blade)**: Always-on server, runs 24/7
+- **babyblue**: Sleeps when not in use, manually powered on for GPU-heavy work
+
 ## Current project priorities
 
 Highest priority projects:
