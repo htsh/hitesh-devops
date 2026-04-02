@@ -36,11 +36,12 @@ This note records the current machine fleet, how Hermes is being used across it,
 ### 3) babyblue
 - OS: Linux, but also boots into Windows
 - Access: SSH alias `babyblue`
+- CPU: AMD 5800X3D
 - RAM: 32GB
-- GPU: RTX 3090 Ti
+- GPU: RTX 3090 Ti (24GB VRAM)
 - Role:
   - secondary Hermes machine
-  - local-model/private inference box
+  - primary local LLM inference box (large models)
   - sometimes used for gaming via the Windows boot
   - useful when the user wants to mimic a colleague's non-macOS setup, e.g. Daniel's data-pipeline environment
   - currently running a good Qwen 3.5 27B model
@@ -48,14 +49,16 @@ This note records the current machine fleet, how Hermes is being used across it,
   - Hermes Gmail access is working there
   - helper wrappers exist: `gsetup`, `gapi`
 
-### 4) debian
+### 4) debian (Razer Blade 2022)
 - OS: Debian
-- Description: converted gaming laptop used as a server
+- Description: converted Razer Blade 2022 gaming laptop used as a server
+- CPU: Intel Core i7 (12th gen)
+- GPU: RTX 3080 Ti Mobile (16GB VRAM)
 - Storage: 8TB mirrored RAID array
-- GPU: 16GB GPU
 - Role:
   - server / storage / heavier data home
-  - likely a good fit for durable archives, large datasets, backups, or services needing local storage
+  - secondary LLM inference box (medium-sized models)
+  - good fit for durable archives, large datasets, backups, or services needing local storage
 
 ### 5) ThinkPad X1 Nano Gen 1
 - OS: Fedora
@@ -86,7 +89,7 @@ Also active / important:
 ## Practical mental model for future agents
 
 - Use the primary M3 Mac as the default place for interactive Hermes work unless there is a reason not to.
-- Consider babyblue for local-model, privacy-sensitive, or GPU-heavy workflows.
-- Consider debian when large storage or server-style persistence matters.
+- Consider babyblue (5800X3D + 3090 Ti 24GB) for large local LLM inference, privacy-sensitive, or GPU-heavy workflows.
+- Consider debian/Razer Blade (i7 + 3080 Ti Mobile 16GB) for medium-sized LLM inference, large storage, or server-style persistence.
 - Consider the M1 Air when Apple/macOS access is useful but more local storage is needed than the primary M3 Mac has.
 - Consider the ThinkPad as a focused Linux webdev/writing machine rather than the main coordination node.
