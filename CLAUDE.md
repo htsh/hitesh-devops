@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Repo Is
 
-A documentation-first DevOps and operations repository for `hitesh-cloud`, a small self-managed infrastructure footprint. Owner is Hitesh Aidasani, a developer in NYC. The repo contains infrastructure references, operational plans, design documents, and will eventually include deployment scripts and utilities.
+A documentation-first DevOps and operations repository for `hitesh-cloud`, a small self-managed infrastructure footprint. Owner is Hitesh Aidasani, a developer in NYC. The repo contains infrastructure references, operational plans, design documents, and the Infra Monitor application.
 
 ## Infrastructure Context
 
@@ -17,20 +17,62 @@ Shared services: Caddy (vps1, vps2), MongoDB replica set rs0 (vps2=PRIMARY, vps1
 
 ## Repository Layout
 
+- `apps/monitor/` — Infra Monitor V1 application (see below)
 - `docs/infra/` — infrastructure inventory, monitoring research, operational references
 - `docs/plans/` — dated design notes and implementation plans (naming: `YYYY-MM-DD-topic-design.md`)
-- Root: `README.md`, `AGENTS.md`, `.gitignore`
+- `docs/superpowers/plans/` — implementation plans broken into buildable steps
+- `hermes/` — repo-local context notes for Hermes AI agent sessions (read `hermes/handoff.md` for cross-session context)
+- `projects/` — stub directories for future projects (`blog-hitesh-nyc`, `intelligent-artifact`)
+- `utils/` — placeholder for shared utilities
 
-## Current Active Project
+## Infra Monitor App (`apps/monitor/`)
 
-Infra Monitor V1 — a self-hosted monitoring service for `vps3` with Mongo persistence, ntfy alerts, and a Tailscale-only admin dashboard. Design is approved. See:
-- `docs/plans/2026-03-19-monitor-design.md` (full spec)
-- `docs/plans/2026-03-19-monitor-dashboard-build-design.md` (dashboard design)
-- `docs/plans/2026-03-19-monitor-dashboard-implementation-plan.md` (implementation plan)
+Self-hosted monitoring service deployed on `vps3`. Fastify server + React/Vite dashboard, MongoDB for persistence, ntfy for alerts, Tailscale-only access.
+
+### Architecture
+
+- **Server** (`src/server/`): Fastify app on port 3100. Entry point: `src/server/index.ts`
+  - `checks/` — check implementations by kind: `http`, `ping`, `tcp`, `redis`, `mongo`, `pm2`, `docker`, `ssh-command`, `heartbeat`. Each exports a runner function. Registry in `checks/registry.ts`, shared types in `checks/types.ts`
+  - `checks/runner.ts` — executes a single check, dispatching to the correct check kind
+  - `scheduler/loop.ts` — scheduling loop that picks due targets and runs checks
+  - `incidents/` — outage detection (`outages.ts`), ntfy notifications (`notifier.ts`), audit logging (`audit.ts`), coordination (`handler.ts`)
+  - `db/` — MongoDB client, collections, indexes, seed data
+  - `api/` — Fastify route handlers: `health.ts`, `dashboard.ts`, `targets.ts`
+  - `config.ts` — env-based config; `config/targets.ts` — YAML target loader
+  - `schemas.ts` — Zod schemas for validation; `types.ts` — shared TypeScript types
+- **Web** (`src/web/`): React SPA with React Router, Tailwind CSS, Radix UI components
+  - Pages: `overview`, `services`, `targets`, `outages`, `target-detail`, `service-detail`, `target-form`
+  - `lib/api.ts` — API client for dashboard data
+- **Config**: `config/targets.yaml` — seed target definitions (check kinds, intervals, thresholds, SSH execution modes)
+- **Execution modes**: `direct` (run from vps3) or `ssh` (SSH into remote node to run check locally)
+
+### Commands (run from `apps/monitor/`)
+
+```bash
+npm install              # install dependencies
+npm run dev              # server dev mode (tsx watch)
+npm run dev:web          # Vite dev server for frontend
+npm run build            # production build (Vite + tsc)
+npm start                # run production server
+npm test                 # run tests (vitest)
+npm run test:watch       # run tests in watch mode
+```
+
+### Testing
+
+Uses Vitest. Tests are in `apps/monitor/tests/`. Path alias `@server` maps to `src/server/`. Run a single test file:
+
+```bash
+cd apps/monitor && npx vitest run tests/checks/http.test.ts
+```
+
+### Deployment
+
+PM2 on `vps3`, config in `ecosystem.config.cjs`. See `apps/monitor/DEPLOY.md` for full deploy guide including SSH key setup for remote checks.
 
 ## Validation Commands
 
-No build system or test runner. Use these for pre-commit checks:
+No repo-wide build system. For documentation changes:
 - `git status --short` / `git diff --stat` — review changes
 - `markdownlint "*.md"` — lint markdown (if installed)
 
