@@ -10,8 +10,9 @@ OpenViking is running on the Debian machine in:
 Runtime details:
 - OpenViking HTTP API: port `1933`
 - Secondary service also exposed by container: port `8020`
-- Ollama runs on the host, not inside Compose
-- Container reaches Ollama via `http://host.docker.internal:11434/v1`
+- llama.cpp model servers run on the host, not inside Compose
+- Embedding endpoint: `http://host.docker.internal:8081/v1`
+- VLM endpoint: `http://host.docker.internal:8082/v1`
 
 ## Connection info from another machine
 

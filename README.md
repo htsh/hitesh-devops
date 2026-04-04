@@ -69,7 +69,7 @@ Both `babyblue` and `debian` are located in Harlem, NYC on a 1Gbps Fios connecti
 
 **OpenViking** · Tailscale-accessible on `:1933`
 - LLM API gateway running in Docker at `~/projects/openviking`
-- Backed by Ollama on the host (RTX 3080 Ti)
+- Backed by host llama.cpp services (embedding + VLM) on the RTX 3080 Ti
 
 ---
 
