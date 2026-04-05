@@ -13,7 +13,20 @@ Three VPS nodes connected over Tailscale:
 - `vps2` (Ubuntu, 6c/8GB) — data/ingest/heavy workloads, domain: `hitesh.nyc`
 - `vps3` (Ubuntu, 2c/2.5GB) — light utility/arbiter, domain: `hitesh.cc`
 
-Shared services: Caddy (vps1, vps2), MongoDB replica set rs0 (vps2=PRIMARY, vps1=SECONDARY, vps3=ARBITER), Redis (vps1, vps2), PM2 for Node apps (vps1, vps2).
+Shared services: Caddy (vps1, vps2), MongoDB standalone on all 3 nodes, Redis (vps1, vps2), PM2 for Node apps (vps1, vps2, vps3).
+
+### Deployed Services
+
+- **vps1**: Stagecouch API (`api.stagecouch.net`, FastAPI), Character Playground (`characters.stagecouch.net`, FastAPI + SvelteKit)
+- **vps2**: Bible API (`bible.hitesh.nyc`, Sinatra/Puma), PostgreSQL (installed, no consumers yet)
+- **vps3**: Infra Monitor (Tailscale-only `:3100`)
+- **debian** (local): OpenViking LLM gateway (Tailscale `:1933`, Docker + llama.cpp)
+
+### Current Priorities
+
+1. **consolidated-york** — highest priority project
+2. **LMATV / Stagecouch** — active, deployed on vps1
+3. **graph-proximity-engine** — active research/development
 
 ## Repository Layout
 
@@ -60,7 +73,7 @@ npm run test:watch       # run tests in watch mode
 
 ### Testing
 
-Uses Vitest. Tests are in `apps/monitor/tests/`. Path alias `@server` maps to `src/server/`. Run a single test file:
+Uses Vitest. Tests are in `apps/monitor/tests/`. Path aliases: `@server` → `src/server/`, `@/*` → `src/web/*`. Run a single test file:
 
 ```bash
 cd apps/monitor && npx vitest run tests/checks/http.test.ts
@@ -82,6 +95,10 @@ No repo-wide build system. For documentation changes:
 - `-` bullets, fenced code blocks for commands, inline code for hosts/domains/ports/filenames
 - Filenames: lowercase with hyphens (e.g., `external-monitors.md`)
 - Include snapshot dates for point-in-time research (e.g., `Snapshot date: 2026-03-19`)
+
+## Other Agents
+
+`AGENTS.md` contains guidelines for non-Claude agents (structure, validation commands, coding style). Content overlaps with this file but is tailored for other tools.
 
 ## Commit Style
 
